@@ -1,1 +1,1 @@
-console.log('my index file guys!');
+console.log('This is Wadih bad index.js file');
