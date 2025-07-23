@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const hello = require('../public/javascripts/index.js'); // Import the hrllo function
 
 
 /* GET home page. */
@@ -15,11 +16,11 @@ router.post('/', async (req, res) => {
     const message = `Name: ${name}\nEmail: ${email}\nReview: ${review}`;
 
     try {
-      console.log('Sending to Discord:\n',message);
-        res.render('index', { success: true });
+      hello(message); // Call the hrllo function from index.js  
+      res.render('validate', { success: true , title: message });
     } catch (error) {
         console.error('Error sending to Discord:', error);
-        res.render('index', { error: true });
+        res.render('validate', { error: true });
     }
 });
 
