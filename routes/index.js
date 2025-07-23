@@ -4,7 +4,9 @@ const { sendToDisc } = require("../routes/bot"); // adjust path if needed
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+    const success = req.query.success;
+    const error = req.query.error;
+  res.render('index', { title: 'Express', success, error  });
 });
 
 // New route for handling Discord messages
