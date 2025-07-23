@@ -5,34 +5,30 @@ var express = require("express");
 const { Client, GatewayIntentBits } = require("discord.js");
 
 // Create new bot instance to client
-const client = new Client({ intents: [GatewayIntentBits.Guilds] }); //Guild intent allows access to server/guild info
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages], //Guild intent allows access to server/guild info
+});
 
 const serverId = process.env.DISCORD_CHANNEL_ID;
-
-// Function to fetch serverID and message being sent
-async function sendToDisc(message, channelId = serverId) {
-  // try catch function
-  try {
-    const channel = await client.channels.fetch(channelId);
-    await channel.send(message);
-    console.log(`Message sent to ${channelId}`);
-  } catch (error) {
-    console.error(`Failed to send message: ${error}`);
-  }
-}
+let isReady = false;
 
 // Login the bot to discord using it's token
-client.login(process.env.BOT_TOKEN_DISCORD)
+client.login(process.env.BOT_TOKEN_DISCORD);
 
 // Listener to when client is ready
-client.on('ready', () => {
-    console.log(client.user.tag);
+client.on("ready", () => {
+  isReady = true;
+  // Debugging if client is ready
+  console.log(`✅ ${client.user.tag} ready`);
+});
 
-    // call function to send message
-    sendToDisc('Bot is triggered');
+// Function to fetch serverID and message being sent
+async function sendToDisc(message, channelId = serverID) {
+  if (!isReady) throw new Error("Bot not connected yet");
 
-    // Log all guilds (servers) the bot is in with their names and IDs
-    console.log(client.guilds.cache.map(g => `${g.name} (${g.id})`).join('\n'));
-})
+  const channel = await client.channels
+    .fetch(channelId);
+  return channel.send(message);
+}
 
-module.exports = { sendToDisc }
+module.exports = { sendToDisc };
