@@ -1,0 +1,20 @@
+body {
+  padding: 50px;
+  font: 14px "Montserrat", sans-serif;
+  background: linear-gradient(to right, #74ebd5, #9face6);
+}
+
+.send {
+  background-color: #59afea;
+
+  color: #fefefe;
+}
+.send:hover {
+      background-color: #2b5a99;
+
+  color: #fefefe;
+}
+
+h1 {
+  color: #0f4c5c;
+}
