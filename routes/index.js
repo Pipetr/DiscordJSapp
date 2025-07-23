@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const hello = require('../public/javascripts/index.js'); // Import the hrllo function
-
+const { sendToDisc } = require("../routes/bot"); // adjust path if needed
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -10,19 +9,19 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express', success, error  });
 });
 
-router.post('/', async (req, res) => {
-    const { name, email, review } = req.body;
+// New route for handling Discord messages
+router.post('/sendToDisc', async (req, res, next) => {
+  console.log("[ROUTE] Received POST /sendToDisc");
+  const { name, email, text } = req.body;
+  console.log("[BODY]", req.body);
 
-    const message = `Name: ${name}\nEmail: ${email}\nReview: ${review}`;
-
-    try {
-      hello(message); // Call the hrllo function from index.js  
-      res.render('validate', { success: true , title: message });
-    } catch (error) {
-        console.error('Error sending to Discord:', error);
-        res.render('validate', { error: true });
-    }
+  const message = `New Review: \nName: ${name} \nEmail: ${email} \nMessage: ${ text }`
+  try {
+    await sendToDisc(message);
+    res.send("Message sent to discord")
+  } catch (error) {
+    res.render('error', { error: error.message });
+  }
 });
-
 
 module.exports = router;
