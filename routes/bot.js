@@ -23,12 +23,22 @@ client.on("ready", () => {
 });
 
 // Function to fetch serverID and message being sent
-async function sendToDisc(message, channelId = serverID) {
-  if (!isReady) throw new Error("Bot not connected yet");
+async function sendToDisc(message, channelId = serverId) {
+  console.log(`[SEND ATTEMPT] Trying to send: "${message}" to channel ${channelId}`);
+  try {
+    if (!isReady) throw new Error("Bot not connected to Discord");
+    if (!message?.trim()) throw new Error("Message is empty");
 
-  const channel = await client.channels
-    .fetch(channelId);
-  return channel.send(message);
+    const channel = await client.channels.fetch(channelId);
+    console.log(`[CHANNEL] Found: ${channel.name} (${channel.id})`);
+
+    const sentMessage = await channel.send(message);
+    
+    return { success: true, messageId: sentMessage.id };
+  } catch (error) {
+    console.error("[FAILED]", error.message);
+    throw error; // Re-throw for route handler
+  }
 }
 
 module.exports = { sendToDisc };

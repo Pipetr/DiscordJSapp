@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const { sendToDisc } = require("../routes/bot"); // adjust path if needed
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -7,16 +8,17 @@ router.get('/', function(req, res, next) {
 });
 
 // New route for handling Discord messages
-router.post('/sendToDisc', async function(req, res, next) {
+router.post('/sendToDisc', async (req, res, next) => {
+  console.log("[ROUTE] Received POST /sendToDisc");
+  const { name, email, text } = req.body;
+  console.log("[BODY]", req.body);
+
+  const message = `New Review: \nName: ${name} \nEmail: ${email} \nMessage: ${ text }`
   try {
-    const { message } = req.body;
-    await req.sendToDisc(message);
-    res.render('success', { 
-      title: 'Success!',
-      message: 'Your message was sent to Discord' 
-    });
+    await sendToDisc(message);
+    res.send("Message sent to discord")
   } catch (error) {
-    next(error); // Pass to error handler
+    res.render('error', { error: error.message });
   }
 });
 
