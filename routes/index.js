@@ -13,12 +13,16 @@ router.get('/', function(req, res, next) {
 router.post('/sendToDisc', async (req, res, next) => {
   console.log("[ROUTE] Received POST /sendToDisc");
   const { name, email, text } = req.body;
-  console.log("[BODY]", req.body);
+  console.log("[BODY]", {name, email, text});
 
   const message = `New Review: \nName: ${name} \nEmail: ${email} \nMessage: ${ text }`
   try {
-    await sendToDisc(message);
-    res.send("Message sent to discord")
+    let sent = await sendToDisc(message);
+    if (!sent.success) {
+      throw new Error("Failed to send message to Discord");
+    }
+    console.log("[ROUTE] Message sent successfully:", sent.messageId);
+    res.render('validate', { title: 'Home', success: sent, error: null });
   } catch (error) {
     res.render('error', { error: error.message });
   }
